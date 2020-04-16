@@ -1,0 +1,30 @@
+# This is a simple python script to get the contents stored inside of a bucket located in a bucket.
+# Prereq: You should have a BASH file storaed in the present working direcrory.
+# The BASH file should be downloaded from https://docs.cloud.oracle.com/en-us/iaas/Content/API/Concepts/signingrequests.htm#Bash
+# I will be using the same file/approach to perform several tasks in future.
+
+
+import os, json, ast
+from envbash import load_envbash
+
+load_envbash('/Users/monroy/.oci/curl.sh')
+
+a = input('Enter your namespace (TenancyName): ')
+b = input('Enter the bucket name: ')
+
+def list_bucket(namespace, bucket):
+	HTTP_CODE = os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o -s -o /dev/null -w "%{http_code}"').read()
+	json_d = {}
+	if HTTP_CODE != '200':
+		print('CURL encountered HTTP ERROR: ', HTTP_CODE)
+		print('OPC-REQUEST-ID obtained: ', os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o -i|grep "opc-request-id:"|cut -d":" -f3').read())
+	else:
+		json_d = os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o').read()
+		print('-- LISTING THE CONTENTS INSIDE THE BUCKET --')
+		json_d = ast.literal_eval(json_d) # /// converting str(JSON) to dict(JSON)
+		json.dumps(json_d)
+		print(json_d)       
+    
+list_bucket(a, b)
+  
+  
