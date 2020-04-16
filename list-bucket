@@ -13,18 +13,19 @@ a = input('Enter your namespace (TenancyName): ')
 b = input('Enter the bucket name: ')
 
 def list_bucket(namespace, bucket):
-	HTTP_CODE = os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o -s -o /dev/null -w "%{http_code}"').read()
-	json_d = {}
-	if HTTP_CODE != '200':
-		print('CURL encountered HTTP ERROR: ', HTTP_CODE)
-		print('OPC-REQUEST-ID obtained: ', os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o -i|grep "opc-request-id:"|cut -d":" -f3').read())
-	else:
-		json_d = os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o').read()
-		print('-- LISTING THE CONTENTS INSIDE THE BUCKET --')
-		json_d = ast.literal_eval(json_d) # /// converting str(JSON) to dict(JSON)
-		json.dumps(json_d)
-		print(json_d)       
-    
-list_bucket(a, b)
-  
-  
+        HTTP_CODE = os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o -s -o /dev/null -w "%{http_code}"').read()
+        json_d = {}
+        if HTTP_CODE != '200':
+                print('CURL encountered HTTP ERROR: ', HTTP_CODE)
+                print('OPC-REQUEST-ID obtained: ', os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o -i|grep "opc-request-id:"|cut -d":" -f3').read())
+        else:
+                json_d = os.popen('oci_curl objectstorage.us-ashburn-1.oraclecloud.com GET /n/'+namespace+'/b/'+bucket+'/o').read()
+                print('-- LISTING THE CONTENTS INSIDE THE BUCKET --')
+                json_d = ast.literal_eval(json_d) # /// converting str(JSON) to dict(JSON)
+                json.dumps(json_d)
+                print(json_d)
+def main():
+        list_bucket(a, b)
+
+if __name__ == "__main__":
+        main()
